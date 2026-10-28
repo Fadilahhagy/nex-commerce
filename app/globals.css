@@ -1,26 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F6F6F3; /* Urban Concrete background */
+  --foreground: #18181B; /* Charcoal Dark text */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@theme {
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* PALET WARNA VEAL: Urban Concrete & Steel Blue */
+  --color-veal: #2563EB;       /* Royal Steel Blue (Primary Accent / Button) */
+  --color-veal-hover: #1D4ED8; /* Darker Blue (Hover state) */
+  --color-veal-light: #EFF6FF; /* Very Soft Blue Tint (Badge / Soft Background) */
+  --color-veal-accent: #1E3A8A;/* Deep Navy Blue (Active / Borders) */
+  --color-veal-bg: #F6F6F3;    /* Urban Concrete (Neutral Off-White Background) */
+  --color-veal-dark: #18181B;  /* Charcoal Dark (Text & Solid Elements) */
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
