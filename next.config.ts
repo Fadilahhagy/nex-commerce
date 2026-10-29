@@ -1,13 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  basePath: "/ecommerce",
-
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "gdkfqcmhnzjxonuwonaw.supabase.co",
+        hostname: "https://gdkfqcmhnzjxonuwonaw.supabase.co", // Ganti dengan URL domain Supabase-mu
       },
       {
         protocol: "https",
@@ -18,11 +16,16 @@ const nextConfig: NextConfig = {
         hostname: "unsplash.com",
       },
       {
-        protocol: "https",
-        hostname: "gdkfqcmhnzjxonuwonaw.supabase.co",
-        port: "",
-        pathname: "/storage/v1/object/public/**",
+        protocol: 'https',
+        hostname: 'gdkfqcmhnzjxonuwonaw.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
       },
+      // Tambahkan domain Supabase Storage kamu jika menyimpan gambar di Supabase:
+      // {
+      //   protocol: "https",
+      //   hostname: "YOUR_SUPABASE_PROJECT_ID.supabase.co",
+      // },
     ],
   },
 };
