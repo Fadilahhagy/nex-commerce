@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Search,
   Menu,
@@ -25,7 +25,10 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const pathname = usePathname();
+  const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Deteksi posisi scroll layar untuk efek floating navbar
@@ -53,6 +56,15 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Fungsi untuk mengeksekusi pencarian (Diubah dari ?search= ke ?q= agar sinkron dengan CatalogPage)
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/catalog?q=${encodeURIComponent(searchQuery.trim())}`);
+      setIsMobileMenuOpen(false);
+    }
+  };
+
   // Daftar kategori produk yang disesuaikan dengan database Supabase
   const categories = [
     { name: "Semua Kategori", href: "/catalog", icon: Layers, desc: "Jelajahi seluruh produk" },
@@ -70,23 +82,23 @@ export default function Navbar() {
   return (
     <header
       className={`sticky top-0 z-50 flex w-full justify-center transition-all duration-300 font-sans ${
-        isScrolled ? "px-4 pt-3 sm:px-6 lg:px-8" : "px-0 pt-0"
+        isScrolled ? "px-3 pt-2.5 sm:px-6 lg:px-8" : "px-0 pt-0"
       }`}
     >
-<nav
-        className={`w-full transition-all duration-300 ${ // <-- overflow-hidden dihapus dari sini!
+      <nav
+        className={`w-full transition-all duration-300 ${
           isScrolled
-            ? "mx-auto max-w-6xl rounded-full border border-zinc-200/80 bg-white/85 px-6 py-3 shadow-lg backdrop-blur-md"
+            ? "mx-auto max-w-6xl rounded-2xl sm:rounded-full border border-zinc-200/80 bg-white/90 px-4 py-3 sm:px-6 shadow-lg backdrop-blur-md"
             : "border-b border-zinc-200/80 bg-white/90 px-4 py-4 sm:px-6 lg:px-8 backdrop-blur-md"
         }`}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 sm:gap-4">
           
           {/* ========================= */}
           {/* LOGO (VEAL BRAND) */}
           {/* ========================= */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-2xl font-black tracking-tight text-veal-dark transition-colors group-hover:text-veal">
+          <Link href="/" className="flex items-center gap-2 group shrink-0">
+            <span className="text-xl sm:text-2xl font-black tracking-tight text-veal-dark transition-colors group-hover:text-veal">
               VEAL
               <span className="text-veal">.</span>
             </span>
@@ -141,7 +153,7 @@ export default function Navbar() {
                 <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isCategoryOpen ? "rotate-180" : ""}`} />
               </button>
 
-              {/* Box Dropdown Menu (Diperlebar & 2 Kolom) */}
+              {/* Box Dropdown Menu */}
               {isCategoryOpen && (
                 <div className="absolute left-0 mt-3 w-[480px] rounded-3xl border border-zinc-200/80 bg-white p-4 shadow-xl backdrop-blur-xl animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="px-2 pb-2.5 mb-2 border-b border-zinc-100 flex items-center justify-between">
@@ -149,7 +161,6 @@ export default function Navbar() {
                     <span className="text-[10px] font-bold text-veal bg-veal/10 px-2 py-0.5 rounded-full">{categories.length} Kategori</span>
                   </div>
 
-                  {/* Grid 2 Kolom */}
                   <div className="grid grid-cols-2 gap-2">
                     {categories.map((cat) => {
                       const IconComponent = cat.icon;
@@ -179,7 +190,7 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Menu Promo (Disabled) */}
+            {/* Menu Promo */}
             <button
               disabled
               title="Promo event belum tersedia saat ini"
@@ -194,17 +205,21 @@ export default function Navbar() {
           {/* ========================= */}
           {/* RIGHT SIDE (SEARCH & USER) */}
           {/* ========================= */}
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
             
             {/* Search Input Desktop */}
-            <div className="relative hidden w-48 sm:block lg:w-64">
+            <form onSubmit={handleSearchSubmit} className="relative hidden w-44 sm:block lg:w-64">
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Cari streetwear, hoodie..."
-                className="w-full rounded-2xl border border-zinc-200 bg-zinc-50/80 px-4 py-3 pl-11 text-sm font-semibold text-veal-dark placeholder:text-zinc-400 focus:border-veal focus:bg-white focus:outline-none"
+                className="w-full rounded-2xl border border-zinc-200 bg-zinc-50/80 px-4 py-2.5 pr-10 text-xs sm:text-sm font-semibold text-veal-dark placeholder:text-zinc-400 focus:border-veal focus:bg-white focus:outline-none"
               />
-              <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
-            </div>
+              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-veal transition cursor-pointer p-1">
+                <Search className="h-3.5 w-3.5" />
+              </button>
+            </form>
 
             {/* AUTH / USER ACTIONS */}
             <NavbarUser />
@@ -212,7 +227,7 @@ export default function Navbar() {
             {/* MOBILE MENU BUTTON */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-700 shadow-sm transition hover:bg-zinc-50 md:hidden cursor-pointer"
+              className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-700 shadow-sm transition hover:bg-zinc-50 md:hidden cursor-pointer shrink-0"
               aria-label="Toggle Navigation Menu"
             >
               {isMobileMenuOpen ? (
@@ -228,23 +243,27 @@ export default function Navbar() {
         {/* MOBILE NAVIGATION MENU */}
         {/* ========================= */}
         {isMobileMenuOpen && (
-          <div className="border-t border-zinc-200/80 py-4 text-xs font-bold text-zinc-700 md:hidden animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="mt-3 border-t border-zinc-200/80 pt-4 pb-2 text-xs font-bold text-zinc-700 md:hidden animate-in fade-in slide-in-from-top-2 duration-200">
             {/* Mobile Search Box */}
-            <div className="relative mb-4 sm:hidden">
+            <form onSubmit={handleSearchSubmit} className="relative mb-3 sm:hidden">
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Cari streetwear, hoodie..."
-                className="w-full rounded-xl border border-zinc-200 bg-white py-2.5 pl-9 pr-4 text-xs font-medium text-veal-dark transition-all placeholder:text-zinc-400 focus:border-veal focus:outline-none"
+                className="w-full rounded-xl border border-zinc-200 bg-zinc-50/80 py-2.5 pl-4 pr-10 text-xs font-medium text-veal-dark transition-all placeholder:text-zinc-400 focus:border-veal focus:bg-white focus:outline-none"
               />
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-            </div>
+              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-veal transition cursor-pointer p-1">
+                <Search className="h-4 w-4" />
+              </button>
+            </form>
 
-            <div className="space-y-1 rounded-2xl border border-zinc-200/80 bg-white p-2 shadow-sm">
+            <div className="space-y-1 rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-2 shadow-sm">
               <Link
                 href="/"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`block rounded-xl px-3 py-2.5 transition ${
-                  pathname === "/" ? "bg-veal text-white font-black" : "hover:bg-zinc-50 hover:text-veal"
+                  pathname === "/" ? "bg-veal text-white font-black" : "hover:bg-white hover:text-veal"
                 }`}
               >
                 Beranda
@@ -254,31 +273,32 @@ export default function Navbar() {
                 href="/catalog"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`block rounded-xl px-3 py-2.5 transition ${
-                  pathname === "/catalog" ? "bg-veal text-white font-black" : "hover:bg-zinc-50 hover:text-veal"
+                  pathname === "/catalog" ? "bg-veal text-white font-black" : "hover:bg-white hover:text-veal"
                 }`}
               >
                 Katalog
               </Link>
 
               {/* Sub-menu Kategori di Mobile */}
-              <div className="px-3 py-2 text-[10px] font-extrabold tracking-wider uppercase text-zinc-400">
+              <div className="px-3 pt-3 pb-1 text-[10px] font-extrabold tracking-wider uppercase text-zinc-400">
                 Kategori Pilihan
               </div>
-              <div className="grid grid-cols-2 gap-1 px-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 px-1">
                 {categories.map((cat) => (
                   <Link
                     key={cat.name}
                     href={cat.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="block rounded-xl px-3 py-2 transition hover:bg-zinc-50 hover:text-veal text-zinc-600 truncate"
+                    className="flex items-center gap-2 rounded-xl px-3 py-2 transition hover:bg-white hover:text-veal text-zinc-600 truncate"
                   >
-                    - {cat.name}
+                    <span className="text-zinc-400">•</span>
+                    <span className="truncate">{cat.name}</span>
                   </Link>
                 ))}
               </div>
 
               {/* Promo Event Mobile Disabled */}
-              <div className="mt-2 flex items-center justify-between rounded-xl bg-zinc-100 px-3 py-2.5 font-extrabold text-zinc-400 opacity-60">
+              <div className="mt-2 flex items-center justify-between rounded-xl bg-zinc-100/80 px-3 py-2.5 font-extrabold text-zinc-400 opacity-60">
                 <span>Promo Event (Soon)</span>
                 <Sparkles className="h-4 w-4 text-zinc-400" />
               </div>

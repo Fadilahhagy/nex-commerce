@@ -41,7 +41,7 @@ export default function HeroSection() {
             <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-t border-zinc-100 pt-6">
               <div className="flex items-center gap-3">
                 <Link
-                  href="/shop"
+                  href="/"
                   className="inline-flex items-center gap-2 rounded-xl bg-veal px-6 py-3 text-xs font-bold text-white transition-all hover:bg-veal-hover hover:shadow-sm sm:text-sm"
                 >
                   <ShoppingBag className="h-4 w-4" />
@@ -82,7 +82,7 @@ export default function HeroSection() {
               </div>
 
               <Link
-                href="/shop?promo=free-shipping"
+                href="/"
                 className="inline-flex items-center gap-1 text-xs font-bold text-veal-light hover:underline"
               >
                 Klaim Voucher <ArrowUpRight className="h-3.5 w-3.5" />
@@ -108,7 +108,7 @@ export default function HeroSection() {
               </div>
 
               <Link
-                href="/category/new"
+                href="/catalog"
                 className="inline-flex items-center gap-1 text-xs font-bold text-veal hover:underline"
               >
                 Lihat Katalog <ArrowUpRight className="h-3.5 w-3.5" />
