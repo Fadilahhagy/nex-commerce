@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react"; // <-- Import Suspense di sini
 import { Inter } from "next/font/google";
 import Footer from "./components/layout/Footer";
+import { Analytics } from "@vercel/analytics/next";
 import Navbar from "@/app/components/layout/Navbar";
 import NavbarSkeleton from "@/app/components/layout/NavbarSkeleton";
 import "./globals.css";
@@ -30,6 +31,7 @@ export default function RootLayout({
         </Suspense>
         <main className="min-h-[calc(100vh-4rem)]">{children}</main>
         <Footer />
+        <Analytics/>
       </body>
     </html>
   );
